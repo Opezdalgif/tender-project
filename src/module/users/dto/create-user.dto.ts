@@ -19,5 +19,8 @@ export class CreateUserDto {
     @IsNotEmpty({message: 'Поле должно быть заполнено'})
     @IsString({message: 'Поле должно быть строкой'})
     @Length(8, 32 , {message: 'Должно быть от 8 до 32 символов'})
-    readonly password: string;
+    readonly passwordHash: string;
+
+    @IsString({message: 'Поле должно быть строкой'})
+    readonly refreshToken: string;
 }

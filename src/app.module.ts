@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './module/auth/auth.module';
+import { RoleModule } from './module/role/role.module';
+import { UsersEntity } from './module/users/enities/users.enities';
+import { UsersModule } from './module/users/users.module';
 
 
 @Module({
@@ -12,9 +16,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [],
+      autoLoadEntities: true,
+      entities: [
+        UsersEntity
+      ],
       synchronize: true,
-    })
+      
+      
+    }),
+    UsersModule,
+    AuthModule, 
+    RoleModule
   ],
   controllers: [],
   providers:[]
