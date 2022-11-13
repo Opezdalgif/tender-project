@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './module/auth/auth.module';
-import { RoleModule } from './module/role/role.module';
+import { ProductModule } from './module/product/product.module';
 import { UsersEntity } from './module/users/enities/users.enities';
 import { UsersModule } from './module/users/users.module';
 
@@ -25,8 +25,8 @@ import { UsersModule } from './module/users/users.module';
       
     }),
     UsersModule,
-    AuthModule, 
-    RoleModule
+    AuthModule,
+    ProductModule
   ],
   controllers: [],
   providers:[]

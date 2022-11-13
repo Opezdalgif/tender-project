@@ -1,9 +1,9 @@
-import { RoleEntity } from "src/module/role/enities/create-role.enities";
-import { BaseEntity, Column, PrimaryGeneratedColumn , Entity , OneToMany, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { RoleEntity } from "./role.entity";
+import { BaseEntity, Column, PrimaryGeneratedColumn , Entity, ManyToMany, JoinTable } from "typeorm";
 
 @Entity({name: 'users'})
 export class UsersEntity extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({nullable: false})

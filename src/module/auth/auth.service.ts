@@ -2,10 +2,10 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '../users/services/users.service';
 import * as bcrypt from 'bcryptjs';
 import { AuthDto } from './dto/auth.dto';
-import { RefreshTokenGuard } from '../common/guards/refreshToken.guard';
+
 
 
 
@@ -18,12 +18,12 @@ export class AuthService {
     ){}
 
     async signUp(dto: CreateUserDto):Promise<any>{
-        const userExists = await this.usersService.geUserByEmail(dto.email)
+        const userExists = await this.usersService.find({email: dto.email})
         if(userExists){
             throw new ForbiddenException('Пользователь с таким email уже есть')
         }
         const passwordHash = await bcrypt.hash(dto.passwordHash , 5)
-        const newUser = await this.usersService.createUser({
+        const newUser = await this.usersService.create({
             ...dto,
             passwordHash: passwordHash
         })
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     async signIn(dto: AuthDto ) {
-        const user = await this.usersService.geUserByEmail(dto.email)
+        const user = await this.usersService.findPassword({email: dto.email})
         if(!user) {
             throw new ForbiddenException('Пользователь с таким email не найден')
         }
@@ -89,7 +89,7 @@ export class AuthService {
     }
 
     async refreshToken(userId: number, refreshToken: string){
-        const user = await this.usersService.getUserById(userId)
+        const user = await this.usersService.find({id: userId})
         if(!user || !user.refreshToken){
             throw new ForbiddenException('Доступ запрещен')
         }

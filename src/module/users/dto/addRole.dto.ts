@@ -1,4 +1,4 @@
 export class AddRoleDto {
-    readonly value: string;
+    readonly name: string;
     readonly userId: number;
 }
