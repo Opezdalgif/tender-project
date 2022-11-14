@@ -1,11 +1,16 @@
-import { Controller  , Post , Get , Body , Param, Patch, Delete} from '@nestjs/common';
+import { Controller  , Post , Get , Body , Param, Patch, Delete, UsePipes, UseGuards} from '@nestjs/common';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserGenerateDto } from '../dto/user-generate.dto';
 import { UserGetDto } from '../dto/user-get.dto';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
+@UseGuards(AccessTokenGuard)
+@UsePipes(ValidationPipe)
 export class UsersController {
     constructor(private userService: UsersService){}
 
@@ -32,5 +37,10 @@ export class UsersController {
     @Delete('/:userId')
     delete(@Param('userId') userId: number) {
         return this.userService.remove(userId)
+    }
+
+    @Post('/generate')
+    generateUser(@Body() dto: UserGenerateDto) {
+        return this.userService.generateUser(dto)
     }
 }

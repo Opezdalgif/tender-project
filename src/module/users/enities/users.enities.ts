@@ -18,9 +18,6 @@ export class UsersEntity extends BaseEntity {
     @Column({nullable: false})
     passwordHash: string;
 
-    @Column()
-    refreshToken: string;
-
     @ManyToMany(() => RoleEntity )
     @JoinTable()
     roles: RoleEntity[]

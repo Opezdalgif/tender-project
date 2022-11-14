@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RefreshTokenDto } from '../../auth/dto/refreshToken.dto';
+
 import { CreateUserDto } from '../dto/create-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -17,6 +17,9 @@ import { AddRoleDto } from '../dto/addRole.dto';
 import { RoleEntity } from '../enities/role.entity';
 import { RoleService } from './role.service';
 import { UserGetDto } from '../dto/user-get.dto';
+import * as bcrypt from 'bcryptjs';
+import * as generator from 'generate-password'
+import { UserGenerateDto } from '../dto/user-generate.dto';
 
 @Injectable()
 export class UsersService {
@@ -38,8 +41,12 @@ export class UsersService {
      */
     
     async create(dto: CreateUserDto) {
-        
-        const user = this.usersRepository.create(dto)
+        const passwordHash = await bcrypt.hash(dto.passwordHash, 5)
+        const user = this.usersRepository.create({
+            ...dto, 
+            passwordHash: passwordHash
+
+        })
 
         try {
             await user.save()
@@ -88,7 +95,6 @@ export class UsersService {
                 id: true,
                 firstName: true,
                 lastName: true,
-                refreshToken: true,
                 roles: {
                     id: true,
                     name: true,
@@ -158,10 +164,6 @@ export class UsersService {
 
     }
 
-    async updateToken(dto: RefreshTokenDto , idUser: number){
-        return await this.usersRepository.update(dto , {id: idUser})
-    }
-
 
     async addRole(dto : AddRoleDto){
         const user = await this.usersRepository.findOne({
@@ -177,6 +179,47 @@ export class UsersService {
             await user.save();
         }
     }
+
+    async comparePassword(user: UsersEntity, password: string) {
+        try {
+            return await bcrypt.compare(password, user.passwordHash);
+        } catch (e) {
+            this.logger.error(
+                `Ошибка проверки правильности пароля пароля: ${e}`,
+            );
+            throw new InternalServerErrorException(
+                'Ошибка проверки правильности пароля',
+            );
+        }
+    }
+
+    async generateUser(generateDto: UserGenerateDto) {
+        const password = await generator.generate({
+            length: 10,
+            numbers: true
+        })
+        this.logger.log(`Ваш пароль: ${password}`)
+
+        const user = await this.find({email: generateDto.email})
+        if(user) {
+            throw new InternalServerErrorException('Пользователь с таким email уже есть')
+        }
+        
+        await this.create({
+            email: generateDto.email,
+            firstName: generateDto.firstName,
+            lastName: generateDto.lastName,
+            passwordHash: password
+        })
+
+        return {email: generateDto.email, password: password}
+
+
+    }
+
+
+
+   
 
 
 

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './module/auth/auth.module';
 import { ProductModule } from './module/product/product.module';
+import { ScraperModule } from './module/scraper/scraper.module';
 import { UsersEntity } from './module/users/enities/users.enities';
 import { UsersModule } from './module/users/users.module';
 
@@ -26,7 +27,8 @@ import { UsersModule } from './module/users/users.module';
     }),
     UsersModule,
     AuthModule,
-    ProductModule
+    ProductModule,
+    ScraperModule
   ],
   controllers: [],
   providers:[]
