@@ -1,4 +1,6 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Get, Param, Patch, Delete } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, Get, Param, Patch, Delete, UsePipes, UseGuards } from "@nestjs/common";
+import { AccessTokenGuard } from "src/common/guards/accessToken.guard";
+import { ValidationPipe } from "src/common/pipes/validation.pipe";
 import { AddRoleDto } from "../dto/addRole.dto";
 import { RoleCreateDto } from "../dto/role-create.dto";
 import { RoleGetDto } from "../dto/role-get.dto";
@@ -7,6 +9,8 @@ import { RoleService } from "../services/role.service";
 import { UsersService } from "../services/users.service";
 
 @Controller('users/roles')
+@UsePipes(ValidationPipe)
+@UseGuards(AccessTokenGuard)
 export class UserRolesController {
     constructor(
         private readonly userService: UsersService,

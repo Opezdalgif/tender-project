@@ -47,6 +47,7 @@ export class ProductService {
      * Вывод всех товаров
      * @returns 
      */
+    
     async findAll() {
         return this.productRepository.find();
     }

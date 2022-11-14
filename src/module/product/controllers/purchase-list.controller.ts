@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Post, Patch } from "@nestjs/common";
-import { Delete, Param } from "@nestjs/common/decorators";
+import { Delete, Param, UseGuards, UsePipes } from "@nestjs/common/decorators";
+import { AccessTokenGuard } from "src/common/guards/accessToken.guard";
+import { ValidationPipe } from "src/common/pipes/validation.pipe";
 import { AddProductDto } from "../dto/addProduct.dto";
 import { DeleteProductDto } from "../dto/deleteProduct.dto";
 import { PurchaseListCreateDto } from "../dto/purchase-list-create.dto";
@@ -8,6 +10,8 @@ import { PurchaseListUpdateDto } from "../dto/purchase-list-update.dto";
 import { PurchaseListService } from "../services/purchase-list.service";
 
 @Controller('product/purchaseList')
+@UseGuards(AccessTokenGuard)
+@UsePipes(ValidationPipe)
 export class PurchaseListController {
     constructor(
         private readonly purchaseListService: PurchaseListService
